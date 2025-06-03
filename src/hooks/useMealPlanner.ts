@@ -40,13 +40,25 @@ export const useMealPlanner = () => {
   });
 
   const updateMealSlot = (day: string, mealTime: string, meal: any) => {
-    setWeekPlan(prev => ({
-      ...prev,
-      [day]: {
-        ...prev[day],
-        [mealTime]: meal,
-      },
-    }));
+    setWeekPlan(prev => {
+      const newPlan = { ...prev };
+      if (!newPlan[day]) {
+        newPlan[day] = {};
+      }
+      
+      if (meal === null) {
+        // Remove the meal by deleting the property
+        delete newPlan[day][mealTime as keyof typeof newPlan[typeof day]];
+      } else {
+        // Add or update the meal
+        newPlan[day] = {
+          ...newPlan[day],
+          [mealTime]: meal,
+        };
+      }
+      
+      return newPlan;
+    });
   };
 
   const generateShoppingList = () => {
