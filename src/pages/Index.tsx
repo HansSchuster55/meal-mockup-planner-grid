@@ -1,12 +1,19 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import React, { useState } from 'react';
+import { Navigation } from '@/components/Navigation';
+import { WeekView } from '@/components/WeekView';
+import { MealLibrary } from '@/components/MealLibrary';
 
 const Index = () => {
+  const [activeView, setActiveView] = useState<'week' | 'library'>('week');
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-gray-50">
+      <Navigation activeView={activeView} onViewChange={setActiveView} />
+      
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {activeView === 'week' ? <WeekView /> : <MealLibrary />}
+      </main>
     </div>
   );
 };
