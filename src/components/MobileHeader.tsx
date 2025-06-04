@@ -19,7 +19,7 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
 }) => {
   return (
     <div className="bg-white border-b border-gray-200 px-4 py-3">
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex items-center justify-between">
         <div className="relative flex-1 mr-3">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
           <Input
@@ -35,21 +35,6 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
           </div>
         </Button>
       </div>
-      
-      {activeView === 'library' && (
-        <div className="flex items-center justify-between">
-          <Button variant="outline" className="text-blue-500 border-blue-500">
-            Category Menu ⌄
-          </Button>
-          <Button 
-            onClick={onAddMeal}
-            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2"
-          >
-            <span className="text-lg">+</span>
-            Add Meal
-          </Button>
-        </div>
-      )}
     </div>
   );
 };
