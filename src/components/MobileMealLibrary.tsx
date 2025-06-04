@@ -50,7 +50,7 @@ export const MobileMealLibrary: React.FC<MobileMealLibraryProps> = ({
                 {selectedCategory} Menu <ChevronDown className="ml-2 h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="bg-white border border-gray-200 shadow-lg">
+            <DropdownMenuContent className="bg-white border border-gray-200 shadow-lg z-50">
               {categories.map((category) => (
                 <DropdownMenuItem
                   key={category}
@@ -76,7 +76,7 @@ export const MobileMealLibrary: React.FC<MobileMealLibraryProps> = ({
       <div className="p-4">
         <div className="grid grid-cols-2 gap-3">
           {filteredMeals.map((meal) => (
-            <MobileMealCard key={meal.id} meal={meal} hideLabels />
+            <MobileMealCard key={meal.id} meal={meal} hideLabels={true} />
           ))}
         </div>
 

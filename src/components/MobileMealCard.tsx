@@ -12,6 +12,7 @@ interface MobileMealCardProps {
     prepTime?: number;
     calories?: number;
     image?: string;
+    imageUrl?: string;
     tags?: string[];
   };
   showAddButton?: boolean;
@@ -49,13 +50,15 @@ export const MobileMealCard: React.FC<MobileMealCardProps> = ({
     );
   }
 
+  const imageUrl = meal.image || meal.imageUrl;
+
   return (
     <Card className="h-32 cursor-pointer hover:shadow-md transition-shadow" onClick={onClick}>
       <CardContent className="p-0 h-full">
-        {meal.image && (
+        {imageUrl && (
           <div className="h-16 w-full overflow-hidden rounded-t-lg">
             <img 
-              src={meal.image} 
+              src={imageUrl} 
               alt={meal.name}
               className="w-full h-full object-cover"
             />

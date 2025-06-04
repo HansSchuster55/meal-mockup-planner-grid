@@ -6,7 +6,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Plus, Image as ImageIcon, X } from 'lucide-react';
+import { useMealLibrary } from '@/hooks/useMealLibrary';
 
 interface AddMealSheetProps {
   isOpen: boolean;
@@ -14,6 +16,7 @@ interface AddMealSheetProps {
 }
 
 export const AddMealSheet: React.FC<AddMealSheetProps> = ({ isOpen, onClose }) => {
+  const { tags } = useMealLibrary();
   const [formData, setFormData] = useState({
     name: '',
     duration: '',
@@ -22,7 +25,7 @@ export const AddMealSheet: React.FC<AddMealSheetProps> = ({ isOpen, onClose }) =
     tags: [] as string[],
     imageUrl: ''
   });
-  const [newTag, setNewTag] = useState('');
+  const [selectedTag, setSelectedTag] = useState<string>('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,15 +41,16 @@ export const AddMealSheet: React.FC<AddMealSheetProps> = ({ isOpen, onClose }) =
       tags: [],
       imageUrl: ''
     });
+    setSelectedTag('');
   };
 
-  const addTag = () => {
-    if (newTag.trim() && !formData.tags.includes(newTag.trim())) {
+  const addTag = (tag: string) => {
+    if (tag && !formData.tags.includes(tag)) {
       setFormData(prev => ({
         ...prev,
-        tags: [...prev.tags, newTag.trim()]
+        tags: [...prev.tags, tag]
       }));
-      setNewTag('');
+      setSelectedTag('');
     }
   };
 
@@ -56,6 +60,8 @@ export const AddMealSheet: React.FC<AddMealSheetProps> = ({ isOpen, onClose }) =
       tags: prev.tags.filter(t => t !== tag)
     }));
   };
+
+  const availableTags = tags.filter(tag => !formData.tags.includes(tag));
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
@@ -113,13 +119,24 @@ export const AddMealSheet: React.FC<AddMealSheetProps> = ({ isOpen, onClose }) =
           <div className="space-y-2">
             <Label>Labels/Tags</Label>
             <div className="flex gap-2">
-              <Input
-                value={newTag}
-                onChange={(e) => setNewTag(e.target.value)}
-                placeholder="Add a label (e.g., Breakfast, Healthy, Quick)"
-                onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
-              />
-              <Button type="button" onClick={addTag} size="sm">
+              <Select value={selectedTag} onValueChange={setSelectedTag}>
+                <SelectTrigger className="flex-1">
+                  <SelectValue placeholder="Select a label" />
+                </SelectTrigger>
+                <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
+                  {availableTags.map((tag) => (
+                    <SelectItem key={tag} value={tag}>
+                      {tag}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Button 
+                type="button" 
+                onClick={() => addTag(selectedTag)} 
+                size="sm"
+                disabled={!selectedTag}
+              >
                 <Plus className="h-4 w-4" />
               </Button>
             </div>

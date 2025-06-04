@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { MobileMealCard } from './MobileMealCard';
 import { MealSearchModal } from './MealSearchModal';
@@ -46,11 +46,12 @@ export const MobileWeekView = () => {
   const [weekNumber, setWeekNumber] = useState(currentWeekNumber);
   const [year, setYear] = useState(currentYear);
   
-  const { weekPlan, updateMealSlot } = useMealPlanner();
+  const { getWeekPlan, updateMealSlot } = useMealPlanner();
   const [selectedSlot, setSelectedSlot] = useState<{ day: string; mealTime: string } | null>(null);
   const { toast } = useToast();
 
   const weekDates = getWeekDates(weekNumber, year);
+  const weekPlan = getWeekPlan(weekNumber, year);
 
   const handlePreviousWeek = () => {
     if (weekNumber > 1) {
@@ -70,6 +71,11 @@ export const MobileWeekView = () => {
     }
   };
 
+  const handleCurrentWeek = () => {
+    setWeekNumber(currentWeekNumber);
+    setYear(currentYear);
+  };
+
   const handleSlotClick = (day: string, mealTime: string) => {
     const existingMeal = weekPlan[day]?.[mealTime.toLowerCase()];
     if (!existingMeal) {
@@ -79,7 +85,7 @@ export const MobileWeekView = () => {
 
   const handleMealSelect = (meal: any) => {
     if (selectedSlot) {
-      updateMealSlot(selectedSlot.day, selectedSlot.mealTime, meal);
+      updateMealSlot(selectedSlot.day, selectedSlot.mealTime, meal, weekNumber, year);
       setSelectedSlot(null);
       toast({
         title: "Meal added",
@@ -87,6 +93,8 @@ export const MobileWeekView = () => {
       });
     }
   };
+
+  const isCurrentWeek = weekNumber === currentWeekNumber && year === currentYear;
 
   return (
     <div className="pb-20 bg-gray-50 min-h-screen">
@@ -97,8 +105,16 @@ export const MobileWeekView = () => {
             <ChevronLeft className="h-4 w-4 mr-1" />
             Previous
           </Button>
-          <div className="text-center">
-            <h2 className="font-semibold text-gray-900">KW{weekNumber}</h2>
+          <div className="flex items-center gap-2">
+            <div className="text-center">
+              <h2 className="font-semibold text-gray-900">KW{weekNumber}</h2>
+            </div>
+            {!isCurrentWeek && (
+              <Button variant="outline" size="sm" onClick={handleCurrentWeek}>
+                <Calendar className="h-4 w-4 mr-1" />
+                Current
+              </Button>
+            )}
           </div>
           <Button variant="ghost" size="sm" onClick={handleNextWeek}>
             Next
@@ -135,6 +151,7 @@ export const MobileWeekView = () => {
                         meal={meal}
                         showAddButton={!meal}
                         onClick={() => handleSlotClick(day, mealTime)}
+                        hideLabels={true}
                       />
                     </div>
                   );
